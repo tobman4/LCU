@@ -5,6 +5,7 @@ using System.Text;
 
 namespace LCU {
     public enum QueTypes : int {
+        NormalBlind = 430,
         RankedTFT = 1100,
         NormalTFT = 1090
     }
