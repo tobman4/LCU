@@ -149,6 +149,11 @@ namespace LCU {
             }
         }
 
+        public static void leavLoby() {
+            using (HttpRequest req = CreateRequest()) {
+                req.Delete(CreateLobbyUrl);
+            }
+        }
 
         public static gameFlowPhase GetGamePhase() {
             try {
