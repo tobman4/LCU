@@ -9,11 +9,16 @@ namespace LCU.Champs {
 
         private List<string> outList = new List<string>();
 
-        public SelectForm(int limit) {
+        public SelectForm(int limit, Champion[] curr) {
             InitializeComponent();
             allChampsList.Items.Clear();
             foreach (string s in Champions.champs.Keys) {
                 allChampsList.Items.Add(s);
+            }
+            if(curr != null) {
+                foreach(Champion c in curr) {
+                    selectedChampList.Items.Add(c.id);
+                }
             }
         }
 
