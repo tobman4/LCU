@@ -1,24 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LCU {
-    class EOGData {
-        public string gameMode;
-        public sBlock statsBlock;
+﻿namespace LCU {
+    public class EOGData {
+        public string gameMode{ get; set; }
+        public sBlock statsBlock{ get; set; }
     }
 
-    class sBlock {
-        public int gameLengthSeconds;
-        public Player[] players;
+    public class sBlock {
+        public int gameLengthSeconds{ get; set; }
+        public Player[] players{ get; set; }
     }
 
-    class Player {
-        public string summonerName;
-        public int health;
-        public int ffaStanding;
-        public long playerId;
+    public class Player {
+        public string summonerName{ get; set; }
+        public int health{ get; set; }
+        public int ffaStanding{ get; set; }
+        public long playerId{ get; set; }
     }
 }

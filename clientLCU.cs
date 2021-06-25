@@ -9,7 +9,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Reflection;
 
-using Newtonsoft.Json;
+using System.Text.Json;
+//using Newtonsoft.Json;
 using Leaf.xNet;
 
 //using LCU.Event;
@@ -41,6 +42,8 @@ namespace LCU {
         private static string getChampSelectSessionUrl => urlBase + "lol-champ-select/v1/session";
         private static string patchActionUrl => urlBase + "lol-champ-select/v1/session/actions/";
         private static string getBannableChampsUrl => urlBase + "lol-champ-select/v1/bannable-champion-ids";
+        private static string declinePlayAgainUrl => urlBase + "lol-lobby/v2/play-again-decline";
+        
 
         #endregion
 
@@ -56,15 +59,13 @@ namespace LCU {
         }
 
         public static bool init(string LOLPath) {
-            string path;
-            if (!LOLPath.EndsWith("lockfile")) {
-                path = Path.Combine(LOLPath, @"League of Legends\lockfile");
+            if(!LOLPath.EndsWith("lockfile")) {
+                string path = Path.Combine(LOLPath, @"League of Legends\lockfile");
                 lolPath = path;
-            } else {
-                path = LOLPath;
             }
             
-            using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+            using (var fileStream = new FileStream(lolPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+
                 using (var streamReader = new StreamReader(fileStream, Encoding.Default)) {
                     string line;
                     while ((line = streamReader.ReadLine()) != null) {
@@ -92,21 +93,7 @@ namespace LCU {
         }
 
         public static bool IsApiReady() {
-            using (HttpRequest request = CreateRequest()) {
-                try {
-                    var response = request.Get(GameflowAvailabilityUrl);
-
-                    if (response.StatusCode == HttpStatusCode.OK) {
-                        dynamic obj = JsonConvert.DeserializeObject(response.ToString());
-                        bool ready = obj.isAvailable;
-                        return ready;
-                    }
-                } catch {
-                    return false;
-                }
-            }
-
-            return false;
+            return GetGamePhase() != gameFlowPhase.NoClient;
         }
         #endregion
 
@@ -116,7 +103,7 @@ namespace LCU {
 
     public static void patchAction(ActionPatch patch) {
             string url = patchActionUrl + patch.id;
-            string body = JsonConvert.SerializeObject(patch);
+            string body = JsonSerializer.Serialize(patch);
 
             using (HttpRequest req = CreateRequest()) {
                 req.Patch(url, body, "application/json");
@@ -136,7 +123,7 @@ namespace LCU {
                 throw new Exception("Faild to load version list");
             }
 
-            string[] verList = JsonConvert.DeserializeObject<string[]>(res.ToString());
+            string[] verList = JsonSerializer.Deserialize<string[]>(res.ToString());
 
             return verList[0];
         }
@@ -157,6 +144,12 @@ namespace LCU {
         public static void leavLoby() {
             using (HttpRequest req = CreateRequest()) {
                 req.Delete(CreateLobbyUrl);
+            }
+        }
+
+        public static void declinePlayAgain() {
+            using (HttpRequest req = CreateRequest()) {
+                req.Post(declinePlayAgainUrl);
             }
         }
 
@@ -197,7 +190,7 @@ namespace LCU {
             using (HttpRequest req = CreateRequest()) {
                 HttpResponse res = req.Get(getSessionUrl);
                 if (res.StatusCode == HttpStatusCode.OK) {
-                    dynamic obj = JsonConvert.DeserializeObject(res.ToString());
+                    loginSession obj = JsonSerializer.Deserialize<loginSession>(res.ToString());
                     return obj.accountId;
                 }
                 return -99;
@@ -215,9 +208,9 @@ namespace LCU {
         private static T getDeserializData<T>(string url) {
             try {
                 using (HttpRequest req = CreateRequest()) {
-                    HttpResponse res = req.Get(getChampSelectSessionUrl);
+                    HttpResponse res = req.Get(url);
                     if (res.StatusCode == HttpStatusCode.OK) {
-                        return JsonConvert.DeserializeObject<T>(res.ToString());
+                        return JsonSerializer.Deserialize<T>(res.ToString());
                     } else {
                         return default(T);
                     }
@@ -236,7 +229,7 @@ namespace LCU {
             using(HttpRequest req = CreateRequest()) {
                 HttpResponse res = req.Get(getEndGameDataUrl);
                 if (res.StatusCode == HttpStatusCode.OK) {
-                    EOGData obj = JsonConvert.DeserializeObject<EOGData>(res.ToString());
+                    EOGData obj = JsonSerializer.Deserialize<EOGData>(res.ToString());
 
                     int place = -99;
 

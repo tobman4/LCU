@@ -41,6 +41,9 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Text.Json, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
@@ -62,6 +65,14 @@
     <Compile Include="Helper\Action.cs" />
     <Compile Include="Champs\Helper\DDchamlist.cs" />
     <Compile Include="Helper\ActionPatch.cs" />
+    <Compile Include="Helper\AllGameData.cs" />
+    <Compile Include="Helper\eventObj.cs" />
+    <Compile Include="Helper\GameActivePlayer.cs" />
+    <Compile Include="Helper\GameChampStats.cs" />
+    <Compile Include="Helper\GameData.cs" />
+    <Compile Include="Helper\GameEvent.cs" />
+    <Compile Include="Helper\GamePlayer.cs" />
+    <Compile Include="Helper\loginSession.cs" />
     <Compile Include="Helper\Player.cs" />
     <Compile Include="Helper\Session.cs" />
     <Compile Include="clientLCU.cs" />
