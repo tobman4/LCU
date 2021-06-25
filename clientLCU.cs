@@ -51,7 +51,8 @@ namespace LCU {
 
         public static bool init(bool loadChamps = false) {
             if(lolPath == string.Empty) {
-                throw new Exception("Cant init with no lol path set");
+                return false;
+                //throw new Exception("Cant init with no lol path set");
             }
 
             return init(lolPath);
@@ -64,6 +65,7 @@ namespace LCU {
             }
             
             using (var fileStream = new FileStream(lolPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+
                 using (var streamReader = new StreamReader(fileStream, Encoding.Default)) {
                     string line;
                     while ((line = streamReader.ReadLine()) != null) {
@@ -77,14 +79,12 @@ namespace LCU {
 
 
             if (Port == 0) {
-                //DBG.log("Unable to initialize ClientLCU.cs (unable to read API port from process)", MessageLevel.Critical);
-                Console.WriteLine($"Critical : Unable to initialize ClientLCU.cs (unable to read API port from process)");
+                Console.WriteLine($"Unable to initialize ClientLCU.cs (unable to read API port from process)");
                 return false;
             }
             
             if(!IsApiReady()) {
-                //DBG.log("Unable to initialize ClientLCU.cs (unable to get data from API)", MessageLevel.Critical);
-                Console.WriteLine($"Critical : Unable to initialize ClientLCU.cs (unable to read API port from process)");
+                Console.WriteLine($"Unable to initialize ClientLCU.cs (unable to read API port from process)");
                 return false;
             } else {
                 accID = getAccountId();

@@ -28,8 +28,8 @@ namespace LCU.Champs {
             return t;
         }
 
-        public static Champion[] UIslectChamps(int limit = -99) {
-            SelectForm form = new SelectForm(limit);
+        public static Champion[] UIslectChamps(int limit = -99, Champion[] current = null) {
+            SelectForm form = new SelectForm(limit,current);
             DialogResult res = form.ShowDialog();
             return (res == DialogResult.OK ? form.getList<Champion>() : null);
         }
