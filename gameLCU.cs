@@ -7,11 +7,13 @@ using System.Management;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Reflection;
+using System.Text.Json;
 
-using Newtonsoft.Json;
+//using Newtonsoft.Json;
 using Leaf.xNet;
 
-using System.Reflection;
+using LCU.Helper;
 
 namespace LCU {
     public static class gameLCU {
@@ -21,26 +23,38 @@ namespace LCU {
 
         private static string activePlayerUrl => urlBase + "activeplayer";
         private static string gameStatsUrl => urlBase + "gamestats";
+        private static string allGameDataUrl => urlBase + "allgamedata";
 
         public static bool IsApiReady() {
             HttpResponse res;
             try {
                 HttpRequest req = clientLCU.CreateRequest();
                 res = req.Get(gameStatsUrl);
+                return res.StatusCode == HttpStatusCode.OK;
             } catch {
                 return false;
             }
-            return res.StatusCode == HttpStatusCode.OK;
         }
 
         public static bool IsPlayerDead() {
             return GetStats().currentHealth == 0;
         }
 
+        public static AllGameData GetAllGameData() {
+            HttpRequest req = clientLCU.CreateRequest();
+            HttpResponse res = req.Get(allGameDataUrl);
+
+            if(res.StatusCode == HttpStatusCode.OK) {
+                return JsonSerializer.Deserialize<AllGameData>(res.ToString());
+            } else {
+                return null;
+            }
+        }
+
         public static dynamic GetStats() {
             using(HttpRequest req = clientLCU.CreateRequest()) {
                 HttpResponse res = req.Get(activePlayerUrl);
-                dynamic dyn = JsonConvert.DeserializeObject(res.ToString());
+                dynamic dyn = JsonSerializer.Deserialize<dynamic>(res.ToString());
                 return dyn.championStats;
             }
         }

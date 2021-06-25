@@ -12,10 +12,10 @@ namespace LCU.Helper {
     public class Session {
 
         //public long id = clientLCU.accID; 
-        public bool valid = true;
-        public Action[][] actions;
-        public int localPlayerCellId;
-        public int lockedEventIndex;
+        public bool valid { get; set; } = true;
+        public Action[][] actions { get; set; }
+        public int localPlayerCellId { get; set; }
+        public int lockedEventIndex { get; set; }
 
         public Action getCurrent(bool justMe) {
             for(int i = 0; i < actions.Length; i++) {
